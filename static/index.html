@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Voice Assistant</title>
+    <script>
+        let ws;
+        let mediaRecorder;
+        let audioChunks = [];
+
+        function startRecording() {
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(stream => {
+                    ws = new WebSocket('ws://localhost:8000/ws/audio');
+                    mediaRecorder = new MediaRecorder(stream);
+                    
+                    mediaRecorder.ondataavailable = event => {
+                        if (event.data.size > 0) {
+                            ws.send(event.data);
+                        }
+                    };
+
+                    ws.onmessage = function(event) {
+                        const data = JSON.parse(event.data);
+                        document.getElementById('transcript').value = data.text;
+                    };
+
+                    mediaRecorder.start(250);
+                });
+        }
+
+        function stopRecording() {
+            mediaRecorder.stop();
+            ws.send('DONE');
+            ws.close();
+        }
+
+        async function processText() {
+            const text = document.getElementById('transcript').value;
+            const response = await fetch('/process-text', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ text: text })
+            });
+            const result = await response.json();
+            document.getElementById('response').value = result.response;
+        }
+    </script>
+</head>
+<body>
+    <button onclick="startRecording()">Start Recording</button>
+    <button onclick="stopRecording()">Stop Recording</button>
+    <button onclick="processText()">Process Text</button>
+    <br>
+    <textarea id="transcript" rows="4" cols="50"></textarea>
+    <br>
+    <textarea id="response" rows="4" cols="50"></textarea>
+</body>
+</html>
