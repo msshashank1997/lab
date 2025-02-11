@@ -1,0 +1,84 @@
+inputs:
+  chat_history:
+    type: list
+    default: []
+    is_chat_input: false
+    is_chat_history: true
+  question:
+    type: string
+    is_chat_input: true
+outputs:
+  answer:
+    type: string
+    reference: ${conclude_answer.output}
+    is_chat_output: true
+nodes:
+- name: check_question_intent
+  type: llm
+  source:
+    type: code
+    path: check_question_intent.jinja2
+  inputs:
+    deployment_name: gpt-4o
+    temperature: 1
+    top_p: 1
+    response_format:
+      type: text
+    chat_history: ${inputs.chat_history}
+    question: ${inputs.question}
+  provider: AzureOpenAI
+  connection: openai129345
+  api: chat
+  module: promptflow.tools.aoai
+  use_variants: false
+- name: chat_with_data
+  type: python
+  source:
+    type: code
+    path: chat_with_data.py
+  inputs:
+    search_connection: AzureAISearch
+    ai_connection: openai129345
+    deployment: gpt-4o
+    history: ${inputs.chat_history}
+    question: ${inputs.question}
+    search_index: brochures
+  activate:
+    when: ${check_question_intent.output}
+    is: UNSTRUCTURED
+  use_variants: false
+- name: generate_sql
+  type: llm
+  source:
+    type: code
+    path: generate_sql.jinja2
+  inputs:
+    deployment_name: gpt-4o
+    temperature: 1
+    top_p: 1
+    response_format:
+      type: text
+    chat_history: ${inputs.chat_history}
+    question: ${inputs.question}
+  provider: AzureOpenAI
+  connection: openai129345
+  api: chat
+  module: promptflow.tools.aoai
+  activate:
+    when: ${check_question_intent.output}
+    is: SQL
+  use_variants: false
+- name: conclude_answer
+  type: python
+  source:
+    type: code
+    path: conclude_answer.py
+  inputs:
+    chat_answer: ${chat_with_data.output}
+    sql_answer: ${generate_sql.output}
+    postgresql: postgresql
+  use_variants: false
+node_variants: {}
+$schema: https://azuremlschemas.azureedge.net/promptflow/latest/Flow.schema.json
+environment:
+  python_requirements_txt: requirements.txt

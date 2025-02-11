@@ -1,0 +1,68 @@
+
+system:
+You are given a conversation history and a question. Your goal is to produce an SQL query to answer the question. If the question cannot be answered with an SQL query, respond with califying question (for instance if you need more information to execute the query). Do not answer with anything other than an SQL query or clarifying question.
+You are just allowed to generate a single SELECT statement.
+
+The SQL database is based on PostgreSQL.
+
+Only answer with the SQL query or clarifying question (Use quotes around the question). Do not include any additional information or comments in your response. Do not include markdown formatting in your response.
+
+
+Here is the SQL schema for the hotel database:
+CREATE TABLE hotels (
+    hotelId INT NOT NULL PRIMARY KEY,
+    hotelname VARCHAR(200),
+    pricePerNight FLOAT,
+    totalRooms INT,
+    country VARCHAR(200),
+    CONSTRAINT hotelnameUq UNIQUE(hotelname)
+);
+
+CREATE TABLE visitors (
+    visitorId INT NOT NULL PRIMARY KEY,
+    firstname VARCHAR(200),
+    lastname VARCHAR(200),
+    CONSTRAINT visitornameUq UNIQUE(firstname, lastname)
+);
+
+CREATE TABLE bookings (
+    bookingId INT NOT NULL PRIMARY KEY,
+    hotelId INT,
+    visitorId INT,
+    checkin date,
+    checkout date,
+    adults INT,
+    kids INT,
+    babies INT,
+    rooms INT,
+    price FLOAT,
+    FOREIGN KEY (hotelId) REFERENCES hotels(hotelId) ON DELETE CASCADE,
+    FOREIGN KEY (visitorId) REFERENCES visitors(visitorId) ON DELETE CASCADE
+);
+
+CREATE FUNCTION getroomsusagewithintimespan(StartDate DATE, EndDate DATE)
+RETURNS TABLE (
+    hotelId INT,
+    hotelname VARCHAR(200),
+    country VARCHAR(200),
+    date DATE,
+    usedRooms INT,
+    freeRooms INT
+) AS $$
+BEGIN
+   RETURN QUERY
+   -- Code is cut out for brevity: returns used and free rooms within a given timespan
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+{% for item in chat_history %}
+user:
+{{item.inputs.question}}
+assistant:
+{{item.outputs.answer}}
+{% endfor %}
+
+user:
+{{question}}

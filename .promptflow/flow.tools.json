@@ -1,0 +1,150 @@
+{
+  "package": {},
+  "code": {
+    "check_question_intent.jinja2": {
+      "name": "check_question_intent.jinja2",
+      "type": "prompt",
+      "inputs": {
+        "chat_history": {
+          "type": [
+            "string"
+          ],
+          "allow_manual_entry": false,
+          "is_multi_select": false,
+          "input_type": "default",
+          "value": "${inputs.chat_history}",
+          "id": "2mz715dv"
+        },
+        "question": {
+          "type": [
+            "string"
+          ],
+          "allow_manual_entry": false,
+          "is_multi_select": false,
+          "input_type": "default",
+          "value": "${inputs.question}",
+          "id": "s82qzfee"
+        }
+      },
+      "source": "check_question_intent.jinja2",
+      "is_builtin": false,
+      "enable_kwargs": false,
+      "tool_state": "stable",
+      "toolId": "check_question_intent.jinja2"
+    },
+    "chat_with_data.py": {
+      "name": "chat_with_data.py",
+      "type": "python",
+      "inputs": {
+        "ai_connection": {
+          "type": [
+            "AzureOpenAIConnection"
+          ],
+          "allow_manual_entry": false,
+          "is_multi_select": false,
+          "input_type": "default"
+        },
+        "deployment": {
+          "type": [
+            "string"
+          ],
+          "allow_manual_entry": false,
+          "is_multi_select": false,
+          "input_type": "default"
+        },
+        "history": {
+          "type": [
+            "string"
+          ],
+          "allow_manual_entry": false,
+          "is_multi_select": false,
+          "input_type": "default",
+          "value": "${inputs.chat_history}",
+          "id": "s53ixhwx"
+        },
+        "question": {
+          "type": [
+            "string"
+          ],
+          "allow_manual_entry": false,
+          "is_multi_select": false,
+          "input_type": "default",
+          "value": "${inputs.question}",
+          "id": "0dt3qoo3"
+        },
+        "search_connection": {
+          "type": [
+            "CognitiveSearchConnection"
+          ],
+          "allow_manual_entry": false,
+          "is_multi_select": false,
+          "input_type": "default"
+        },
+        "search_index": {
+          "type": [
+            "string"
+          ],
+          "allow_manual_entry": false,
+          "is_multi_select": false,
+          "input_type": "default"
+        }
+      },
+      "source": "chat_with_data.py",
+      "function": "my_python_tool",
+      "is_builtin": false,
+      "enable_kwargs": false,
+      "tool_state": "stable",
+      "toolId": "chat_with_data.py"
+    },
+    "generate_sql.jinja2": {
+      "name": "generate_sql.jinja2",
+      "type": "prompt",
+      "inputs": {
+        "chat_history": {
+          "type": [
+            "string"
+          ],
+          "allow_manual_entry": false,
+          "is_multi_select": false,
+          "input_type": "default",
+          "value": "${inputs.chat_history}",
+          "id": "gj8tytgh"
+        },
+        "question": {
+          "type": [
+            "string"
+          ],
+          "allow_manual_entry": false,
+          "is_multi_select": false,
+          "input_type": "default",
+          "value": "${inputs.question}",
+          "id": "ewvp9mrx"
+        }
+      },
+      "source": "generate_sql.jinja2",
+      "is_builtin": false,
+      "enable_kwargs": false,
+      "tool_state": "stable",
+      "toolId": "generate_sql.jinja2"
+    },
+    "conclude_answer.py": {
+      "type": "python",
+      "inputs": {
+        "sql_answer": {
+          "type": [
+            "string"
+          ]
+        },
+        "chat_answer": {
+          "type": [
+            "object"
+          ]
+        }
+      },
+      "source": "conclude_answer.py",
+      "function": "return_answer",
+      "name": "conclude_answer.py",
+      "toolId": "conclude_answer.py"
+    }
+  }
+}

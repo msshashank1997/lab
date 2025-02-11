@@ -1,0 +1,4 @@
+promptflow
+promptflow-tools
+promptflow-azure
+psycopg2-binary

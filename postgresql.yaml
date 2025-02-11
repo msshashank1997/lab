@@ -1,0 +1,10 @@
+$schema: https://azuremlschemas.azureedge.net/promptflow/latest/CustomConnection.schema.json
+name: postgresql
+type: custom
+configs:
+  hostname: ${env:PGHOST}
+  port: ${env:PGPORT}
+  user: ${env:PGUSER}
+  database: ${env:PGDATABASE}
+secrets:
+  passwd : ${env:PGPASSWORD}

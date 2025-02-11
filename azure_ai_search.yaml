@@ -1,0 +1,9 @@
+$schema: 
+  https://azuremlschemas.azureedge.net/promptflow/latest/CognitiveSearchConnection.schema.json
+type: cognitive_search
+name: azure_ai_search
+module: promptflow.connections
+api_key: ${env:AZURE_AI_SEARCH_API_KEY}
+api_base: ${env:AZURE_AI_SEARCH_ENDPOINT}
+api_version: '2024-07-01'
+auth_mode: key
